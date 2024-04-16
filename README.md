@@ -9,7 +9,7 @@
 | goods-api                | 프로젝트 최상단                          |
 | goods-api > dockerfile   | dockerfile                            |
 | goods-api > secret       | DB 접속 정보 등 secret file             |
-| goods-api > src > config | 환경별 설정 파일, redis-api endpoint 파일 |
+| goods-api > src > config | 환경별 설정 파일 |
 
 ### 특이사항
 
