@@ -2,13 +2,12 @@ import { registerAs } from '@nestjs/config';
 import * as fs from 'fs';
 import * as path from 'path';
 
-// TODO : secret 위치 변경 필요
 const MYSQL_HOST = path.resolve('./secret/development/mysql-host');
 const MYSQL_USER_NAME = path.resolve('./secret/development/mysql-username');
 const MYSQL_PASSWORD = path.resolve('./secret/development/mysql-password');
 
 export default registerAs('config-info', () => ({
-    //port: parseInt(process.env.PORT, 10) || 8002,
+    port: parseInt(process.env.PORT, 10) || 8002,
 
     database: {
         mysql: {
