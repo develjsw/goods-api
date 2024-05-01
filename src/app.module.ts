@@ -6,6 +6,7 @@ import configLocal from './config/config.local';
 import configDevelopment from './config/config.development';
 import configProduction from './config/config.production';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { GoodsModule } from './goods/goods.module';
 
 let config;
 switch (process.env.NODE_ENV) {
@@ -33,7 +34,8 @@ switch (process.env.NODE_ENV) {
                 // TODO : config/config.development.ts 파일에 type 생성 후, object 타입 변경 예정
                 configService.get<object>('config-info.database.mysql'),
             inject: [ConfigService]
-        })
+        }),
+        GoodsModule
     ],
     controllers: [AppController],
     providers: [AppService]
