@@ -3,6 +3,8 @@ import {
     Controller,
     Delete,
     Get,
+    Param,
+    ParseIntPipe,
     Patch,
     Post,
     UsePipes,
@@ -19,15 +21,19 @@ export class GoodsController {
      * 상품 등록
      * @param goodsCreateDto
      */
-    @Post(':goodsId')
+    @Post()
     @UsePipes(ValidationPipe)
     async create(@Body() goodsCreateDto: GoodsCreateDto) {
         return await this.goodsService.goodsCreate(goodsCreateDto);
     }
 
+    /**
+     * 상품 삭제
+     * @param goodsId
+     */
     @Delete(':goodsId')
-    async delete() {
-        return '상품삭제';
+    async delete(@Param('goodsId', ParseIntPipe) goodsId: number) {
+        return await this.goodsService.goodsDelete(goodsId);
     }
 
     @Patch(':goodsId')
@@ -35,13 +41,17 @@ export class GoodsController {
         return '상품수정';
     }
 
-    @Post('')
+    @Post()
     async list() {
         return '상품리스트';
     }
 
-    @Get('')
-    async detail() {
-        return '상품상세';
+    /**
+     * 상품 상세
+     * @param goodsId
+     */
+    @Get(':goodsId')
+    async detail(@Param('goodsId', ParseIntPipe) goodsId: number) {
+        return await this.goodsService.goodsDetail(goodsId);
     }
 }

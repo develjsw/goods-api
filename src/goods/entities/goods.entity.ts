@@ -4,8 +4,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export class GoodsEntity {
     @PrimaryGeneratedColumn({
         name: 'goods_id',
-        comment: '상품 코드(PK)',
-        zerofill: true
+        comment: '상품 코드(PK)'
     })
     goodsId: number;
 
@@ -42,4 +41,11 @@ export class GoodsEntity {
         nullable: true
     })
     updateDate: Date;
+
+    @Column('datetime', {
+        name: 'delete_date',
+        comment: '상품 삭제일',
+        nullable: true
+    })
+    deleteDate: Date;
 }
