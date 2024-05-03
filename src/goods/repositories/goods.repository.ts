@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, InsertResult, IsNull, Not, Repository, UpdateResult } from 'typeorm';
 import { GoodsEntity } from '../entities/goods.entity';
-import { GoodsCreateDto } from '../dto/goods-create.dto';
+import { GoodsDto } from '../dto/goods.dto';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
@@ -12,8 +12,8 @@ export class GoodsRepository {
         this.goodsRepository = this.dataSource.getRepository(GoodsEntity);
     }
 
-    async goodsCreate(goodsCreateDto: GoodsCreateDto): Promise<InsertResult> {
-        const convertToGoodsEntity: GoodsEntity = plainToInstance(GoodsEntity, goodsCreateDto);
+    async goodsCreate(goodsDto: GoodsDto): Promise<InsertResult> {
+        const convertToGoodsEntity: GoodsEntity = plainToInstance(GoodsEntity, goodsDto);
         convertToGoodsEntity.regDate = new Date();
 
         return await this.goodsRepository.insert(convertToGoodsEntity);
@@ -24,6 +24,20 @@ export class GoodsRepository {
 
         return await this.goodsRepository.update(goodsId, {
             deleteDate: deleteDate
+        });
+    }
+
+    async goodsModify(goodsId: number, goodsDto: GoodsDto): Promise<UpdateResult> {
+        const convertToGoodsEntity: GoodsEntity = plainToInstance(GoodsEntity, goodsDto);
+        convertToGoodsEntity.updateDate = new Date();
+
+        return await this.goodsRepository.update(goodsId, convertToGoodsEntity);
+    }
+
+    async goodsList(perPage: number, skip: number): Promise<[GoodsEntity[], number]> {
+        return await this.goodsRepository.findAndCount({
+            skip: skip,
+            take: perPage
         });
     }
 

@@ -7,18 +7,20 @@ import {
     ParseIntPipe,
     Patch,
     Post,
+    Query,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common';
 import { GoodsCreateDto } from './dto/goods-create.dto';
+import { GoodsDto } from './dto/goods.dto';
 import { GoodsService } from './servicies/goods.service';
 
-@Controller('api/v1/goods')
+@Controller('api/goods')
 export class GoodsController {
     constructor(private readonly goodsService: GoodsService) {}
 
     /**
-     * 상품 등록
+     * 상품 등록 (단건/다건)
      * @param goodsCreateDto
      */
     @Post()
@@ -28,7 +30,7 @@ export class GoodsController {
     }
 
     /**
-     * 상품 삭제
+     * 상품 삭제 (단건)
      * @param goodsId
      */
     @Delete(':goodsId')
@@ -36,14 +38,25 @@ export class GoodsController {
         return await this.goodsService.goodsDelete(goodsId);
     }
 
+    /**
+     * 상품 수정 (단건)
+     * @param goodsId
+     * @param goodsDto
+     */
     @Patch(':goodsId')
-    async modify() {
-        return '상품수정';
+    @UsePipes(ValidationPipe)
+    async modify(@Param('goodsId', ParseIntPipe) goodsId: number, @Body() goodsDto: GoodsDto) {
+        return await this.goodsService.goodsModify(goodsId, goodsDto);
     }
 
-    @Post()
-    async list() {
-        return '상품리스트';
+    /**
+     * 상품 리스트
+     * @param page
+     * @param perPage
+     */
+    @Get()
+    async list(@Query('page', ParseIntPipe) page: number, @Query('perPage', ParseIntPipe) perPage: number) {
+        return await this.goodsService.goodsList(page, perPage);
     }
 
     /**
