@@ -15,7 +15,7 @@ import { GoodsCreateDto } from './dto/goods-create.dto';
 import { GoodsDto } from './dto/goods.dto';
 import { GoodsService } from './servicies/goods.service';
 
-@Controller('api/goods')
+@Controller('api/v1/goods')
 export class GoodsController {
     constructor(private readonly goodsService: GoodsService) {}
 
