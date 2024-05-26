@@ -5,19 +5,26 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import configLocal from './config/local/config.local';
 import configDevelopment from './config/development/config.development';
 import configProduction from './config/production/config.production';
+import configApiLocal from './config/local/config.api.local';
+import configApiDevelopment from './config/development/config.api.development';
+import configApiProduction from './config/production/config.api.production';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GoodsModule } from './goods/goods.module';
 
 let config;
+let apiConfig;
 switch (process.env.NODE_ENV) {
     case 'production':
         config = configProduction;
+        apiConfig = configApiProduction;
         break;
     case 'development':
         config = configDevelopment;
+        apiConfig = configApiDevelopment;
         break;
     default:
         config = configLocal;
+        apiConfig = configApiLocal;
         break;
 }
 
@@ -26,7 +33,7 @@ switch (process.env.NODE_ENV) {
         ConfigModule.forRoot({
             isGlobal: true,
             cache: true,
-            load: [config]
+            load: [config, apiConfig]
         }),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
