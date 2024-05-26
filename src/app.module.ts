@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import configLocal from './config/config.local';
-import configDevelopment from './config/config.development';
-import configProduction from './config/config.production';
+import configLocal from './config/local/config.local';
+import configDevelopment from './config/development/config.development';
+import configProduction from './config/production/config.production';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GoodsModule } from './goods/goods.module';
 
