@@ -19,14 +19,10 @@ export class AuthGuard implements CanActivate {
         }
 
         try {
-            console.log(this.configService.get('apis.in.jwt.address'));
-            console.log(this.configService.get('apis.in.jwt.url.v1.detail'));
-
             const jwtDetailEndpoint = this.configService
                 .get('apis.in.jwt.address')
                 .concat(this.configService.get('apis.in.jwt.url.v1.detail'))
                 .concat('/' + token);
-            console.log(jwtDetailEndpoint);
 
             // token 유효성 체크
             await this.apiService.init().callApi(jwtDetailEndpoint, 'GET');
