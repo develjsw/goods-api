@@ -2,12 +2,12 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import configLocal from './config/local/config.local';
-import configDevelopment from './config/development/config.development';
-import configProduction from './config/production/config.production';
-import configApiLocal from './config/local/config.api.local';
-import configApiDevelopment from './config/development/config.api.development';
-import configApiProduction from './config/production/config.api.production';
+import localConfig from './config/local/local.config';
+import developmentConfig from './config/development/development.config';
+import productionConfig from './config/production/production.config';
+import apiLocalConfig from './config/local/api.local.config';
+import apiDevelopmentConfig from './config/development/api.development.config';
+import apiProductionConfig from './config/production/api.production.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GoodsModule } from './goods/goods.module';
 import { LoggerMiddleware } from './common/logger/logger.middleware';
@@ -16,16 +16,16 @@ let config;
 let apiConfig;
 switch (process.env.NODE_ENV) {
     case 'production':
-        config = configProduction;
-        apiConfig = configApiProduction;
+        config = productionConfig;
+        apiConfig = apiProductionConfig;
         break;
     case 'development':
-        config = configDevelopment;
-        apiConfig = configApiDevelopment;
+        config = developmentConfig;
+        apiConfig = apiDevelopmentConfig;
         break;
     default:
-        config = configLocal;
-        apiConfig = configApiLocal;
+        config = localConfig;
+        apiConfig = apiLocalConfig;
         break;
 }
 
@@ -39,7 +39,7 @@ switch (process.env.NODE_ENV) {
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             useFactory: (configService: ConfigService) =>
-                // TODO : config/config.development.ts 파일에 type 생성 후, object 타입 변경 예정
+                // TODO : config/development.config.ts 파일에 type 생성 후, object 타입 변경 예정
                 configService.get<object>('config-info.database.mysql'),
             inject: [ConfigService]
         }),
