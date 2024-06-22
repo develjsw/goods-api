@@ -11,6 +11,7 @@ import apiProductionConfig from './config/production/api.production.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GoodsModule } from './goods/goods.module';
 import { LoggerMiddleware } from './logger/logger.middleware';
+import { CommonModule } from './common/common.module';
 
 let config;
 let apiConfig;
@@ -43,7 +44,8 @@ switch (process.env.NODE_ENV) {
                 configService.get<object>('config-info.database.mysql'),
             inject: [ConfigService]
         }),
-        GoodsModule
+        GoodsModule,
+        CommonModule
     ],
     controllers: [AppController],
     providers: [AppService]
