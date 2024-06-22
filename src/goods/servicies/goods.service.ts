@@ -4,14 +4,17 @@ import { GoodsDto } from '../dto/goods.dto';
 import { GoodsRepository } from '../repositories/goods.repository';
 import { UpdateResult } from 'typeorm';
 import { GoodsEntity } from '../entities/goods.entity';
+import { SlackService } from '../../common/webhook/slack/slack.service';
 
 @Injectable()
 export class GoodsService {
-    constructor(private readonly goodsRepository: GoodsRepository) {}
+    constructor(
+        private readonly goodsRepository: GoodsRepository,
+        private readonly slackService: SlackService
+    ) {}
 
     async goodsCreate(goodsCreateDto: GoodsCreateDto): Promise<{ goodsIds: number[] }> {
         try {
-            // TODO : 생성 실패 데이터 별도로 추출하여 반환 해줘야 할지 판단 필요
             /* 상품등록은 순서 상관없으므로 병렬 처리 */
             const insertResults = await Promise.allSettled(
                 goodsCreateDto.goodsDto.map((item: GoodsDto) => {
@@ -19,6 +22,7 @@ export class GoodsService {
                 })
             );
 
+            /* 등록성공 PK 추출 */
             const goodsIds: number[] = insertResults
                 .filter((item) => item.status === 'fulfilled')
                 .map((item) => {
@@ -26,6 +30,21 @@ export class GoodsService {
                         .map((subItem: { goodsId: number }) => subItem.goodsId)
                         .find((innerItem: number) => innerItem);
                 });
+
+            /* 등록실패 데이터 추출 */
+            const rejects = insertResults
+                .filter((item) => item.status === 'rejected')
+                .map((item) => {
+                    return item['reason']['parameters'];
+                });
+
+            // TODO : Slack 알림 발송에서 문제 발생시 에러 발생되면 안되므로 try catch 분리 필요
+            /* 실패 데이터 Slack 알림 발송 */
+            await this.slackService.sendCustomMessage(
+                '[ GoodsCreate - Error ]',
+                JSON.stringify({ params: rejects }),
+                '#FF0000'
+            );
 
             return { goodsIds: goodsIds };
         } catch (error) {
